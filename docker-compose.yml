@@ -1,0 +1,48 @@
+version: '3.0'
+
+volumes:
+  mongo-db:
+
+services:
+  db-mongo:
+    image: mongo:5.0-rc-focal
+    container_name: db-mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME: username
+      - MONGO_INITDB_ROOT_PASSWORD: e296cd9f
+      - MONGO_INITDB_DATABASE: admin
+    volumes:
+      - mongo-db:/data/db
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-network
+
+  product-ms:
+    image: product-ms
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    environment:
+      WAIT_HOSTS: db-mongo:27017, rabbitmq:5672
+      MONGODB_URI: mongodb://username:e296cd9f@db-mongo:27017/parkingmeter?retryWrites=true&w=majority&authSource=admin
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+    command: sh -c "/wait && java -jar /app/product-ms.jar"
+
+
+networks:
+  app-network:
+    driver: bridge
