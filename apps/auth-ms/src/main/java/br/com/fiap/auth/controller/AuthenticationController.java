@@ -54,7 +54,7 @@ public class AuthenticationController {
 
             RegisterResponse response = this.userService.register(data);
             if (response == null) {
-                return ResponseEntity.badRequest().body(
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                         StandardError.builder()
                                 .status(HttpStatus.BAD_REQUEST.value())
                                 .message("Este email já está cadastrado no nosso banco de dados")
@@ -63,7 +63,6 @@ public class AuthenticationController {
             }
             return ResponseEntity.ok(response);
         } catch (Exception error) {
-            log.info("klajsdlkjasdlkjadklfjkaçsflçjasçkfljafçlsfalçkjfsalkfjslçsfaklçjs");
             return ResponseEntity.badRequest().body(
                     StandardError.builder()
                             .status(HttpStatus.BAD_REQUEST.value())
