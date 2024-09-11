@@ -17,17 +17,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Product {
 
-  @Id
-  private String id;
+	@Id
+	private String id;
 
-  private String name;
+	private String name;
 
-  private String description;
+	private String description;
 
-  private String imageUrl;
-  
-  private BigDecimal price;
-  
-  private Integer amount; 
+	private String imageUrl;
+
+	private BigDecimal price;
+
+	private String category;
+
+	private int quantity;
 
 }

@@ -1,9 +1,14 @@
 package br.com.fiap.adjt.ecommerce.service;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import br.com.fiap.adjt.ecommerce.dto.ProductDTO;
+import br.com.fiap.adjt.ecommerce.dto.ProductMapper;
 import br.com.fiap.adjt.ecommerce.model.Product;
 import br.com.fiap.adjt.ecommerce.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -15,6 +20,7 @@ import reactor.core.publisher.Mono;
 public class ProductService {
 
 	private ProductRepository productRepository;
+	private final ProductMapper productMapper;
 
 	public Flux<Product> findAll() {
 		return productRepository.findAll();
@@ -50,24 +56,27 @@ public class ProductService {
 		return productRepository.findByName(name);
 	}
 
-	public Mono<Product> sell(String id, Product product) {
-		
-		return productRepository.findById(id).map(Optional::of).defaultIfEmpty(Optional.empty()).flatMap(optional -> {
-			if (optional.isPresent()) {
-				
-				Product productdb = optional.get(); 
+	public Flux<Product> save(Flux<Product> products) {
+		return productRepository.saveAll(products);
+	}
 
-				if (productdb.getAmount() > product.getAmount()) {
-					Integer newAmout = productdb.getAmount() - product.getAmount();
-					productdb.setAmount(newAmout);
-					
-					return productRepository.save(productdb);
-				}
-				
-			}
-			return Mono.empty();
-		});
+	public ResponseEntity<Mono<ProductDTO>> sellProduct(String id, Integer quantity) throws InterruptedException, ExecutionException {
 		
+		Product product = productRepository.findById(id).toFuture().get();
+		
+		if (product != null && product.getQuantity() >= quantity) {
+			
+			int quantityCurrent = product.getQuantity() ;
+
+			product.setQuantity(quantityCurrent - quantity);
+			
+			Mono<ProductDTO> map = productRepository.save(product).map(p -> productMapper.productToDTO(p));
+			
+			return ResponseEntity.status(HttpStatus.OK).body(map);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Mono.empty());
+		}
+
 	}
 
 }
