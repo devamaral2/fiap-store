@@ -1,0 +1,41 @@
+HELP.md
+target/*
+.idea/*
+# Não ignorar arquivos .jar na pasta target
+!target/*.jar
+.env
+# Continuar ignorando subdiretórios e seus conteúdos dentro de target
+target/**/*
+!target/**/*.jar
+
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
