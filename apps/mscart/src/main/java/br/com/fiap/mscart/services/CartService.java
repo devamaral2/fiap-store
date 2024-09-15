@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,8 +34,15 @@ public class CartService {
             Cart newCart = Cart.builder().clientId(clientId).build();
             cartRepository.save(newCart);
         }
-        cartItems.forEach(item -> item.setCartId(optionalCart.get().getId()));
-        return cartItemRepository.saveAll(cartItems);
+        List<CartItem> updatedCartItems = cartItems.stream()
+                .map(item -> CartItem.builder()
+                        .productId(item.getProductId())
+                        .quantity(item.getQuantity())
+                        .price(item.getPrice())
+                        .cart(optionalCart.get())  // Associa o cart ao novo CartItem
+                        .build())
+                .collect(Collectors.toList());
+        return cartItemRepository.saveAll(updatedCartItems);
     }
 
     public void clearCart(UUID clientId) {

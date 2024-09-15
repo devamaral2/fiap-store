@@ -7,7 +7,7 @@ api:
 
 spring:
   application:
-    name: auth-ms
+    name: msauth
   datasource:
     url: jdbc:postgresql://localhost:5432/clients_db
     username: user1

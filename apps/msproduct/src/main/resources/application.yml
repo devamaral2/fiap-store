@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: product-ms
+    name: msproduct
   datasource:
     url: jdbc:postgresql://localhost:5433/products_db
     username: user2

@@ -3,9 +3,9 @@ server:
 
 spring:
   application:
-    name: mspedidos
+    name: mscart
   datasource:
-    url: jdbc:postgresql://localhost:5434/requests_db
+    url: jdbc:postgresql://localhost:5434/cart_db
     username: user3
     password: password3
 
@@ -17,9 +17,3 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
-  rabbitmq:
-    username: guest
-    password: guest
-    host: localhost
-    port: 5672
