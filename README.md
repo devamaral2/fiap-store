@@ -89,44 +89,97 @@ IMAGEM TELA5
 
 ### Descrição dos Microserviços:
 
-1. **Gateway** (porta 8000):
-   - Roteia as requisições para os microserviços.
-   - Exemplo: um usuário tenta acessar o carrinho de compras, o gateway identifica a rota e redireciona para o microserviço correto.
 
-2. **Microserviço de Login** (porta 8001):
+1. **Microserviço de Login** (porta 8000):
    - Gerencia o cadastro e login de usuários.
    - Verifica se o usuário tem permissão (autorização) para executar determinadas ações.
    - Usa o **Spring Security** para autenticação e autorização.
    - Armazena informações como: nome de usuário, senha e role (papel, ex: admin ou cliente).
 
-3. **Microserviço de Produtos** (porta 8002):
+2. **Microserviço de Produtos** (porta 8001):
    - Lista e gerencia produtos (nome, preço, estoque, etc.).
    - Verifica a disponibilidade de itens no estoque.
    - Autentica usuários e permite operações baseadas em seu papel.
    - Utiliza validações para garantir a integridade dos dados.
 
-4. **Microserviço de Carrinho** (porta 8003):
+3. **Microserviço de Carrinho** (porta 8002):
    - Gerencia o estado do carrinho de compras entre as sessões.
    - Permite adicionar e remover produtos no carrinho.
    - Usa **Spring WebFlux** para permitir operações reativas e melhorar a performance em sistemas de alta demanda.
 
-5. **Microserviço de Pagamento** (porta 8004):
+4. **Microserviço de Pagamento** (porta 8003):
    - Processa o pagamento dos itens no carrinho.
    - Confirma o pagamento e atualiza o estoque do produto.
    - Comunicação assíncrona entre o microserviço de carrinho e o de pagamento através do **RabbitMQ** (fila de mensagens).
 
-6. **Mensageria com RabbitMQ**:
-   - Utilizado para comunicação entre os microserviços, como o envio de mensagens entre o carrinho e o pagamento.
+# Para rodar o projeto
+## Pré-requisitos
 
-### Autenticação e Autorização:
-- **Spring Security** garante que apenas usuários autorizados possam executar certas ações, como adicionar produtos ao carrinho ou realizar pagamentos.
-- Sessões de usuário são mantidas, garantindo que o carrinho de compras não seja perdido após o usuário sair do sistema.
+Certifique-se de ter as seguintes ferramentas instaladas:
 
-### Validação e Segurança:
-- **Spring Secret** pode ser usado para proteger informações sensíveis.
-- Validações de integridade, como a verificação de estoque e confirmação de pagamento, garantem a consistência dos dados.
+- **Docker e Docker Compose**: Para criar e gerenciar os containers de banco de dados.
+- **Java JDK 21** ou superior: Para rodar os microserviços Spring Boot.
+- **Node.js e pnpm**: Para rodar o frontend.
+- **Maven**: Para rodar os serviços Spring Boot.
 
-Com este projeto conseguimos englobar e aplicar todos os conhecimentos obtidos durante a graduação.Concluímos apresentando este sistema escalável, seguro e otimizado para lidar com muitas requisições simultâneas graças ao uso de **WebFlux** e à arquitetura baseada em microserviços.
+## Como Rodar o Projeto
+
+### 1. Clone o repositório
+
+Clone o repositório do projeto para sua máquina local:
+
+```bash
+git clone https://github.com/devamaral2/fiap-store
+cd seu-projeto
+```
+
+### 2. Inicie os containers do banco de dados
+
+Na raiz do projeto, há um arquivo docker-compose.yml que configura os bancos de dados para os 4 microserviços. Para criar os containers dos bancos de dados com volumes persistentes, execute o comando:
+
+```bash
+docker-compose up -d
+```
+
+Esse comando criará e iniciará os containers do PostgreSQL para cada serviço.
+
+### 3. Rodando os microserviços
+
+Cada microserviço (msauth, msproduct, mscart, mspayment) deve ser rodado separadamente. Navegue até a pasta de cada microserviço e execute o Spring Boot usando Maven ou Gradle.
+
+Exemplo para rodar com Maven:
+
+```bash
+cd apps/msauth
+./mvnw spring-boot:run
+```
+
+
+Repita esse comando para cada um dos outros serviços (msproduct, mscart, mspayment), trocando o diretório correspondente.
+
+
+4. Rodando o frontend
+
+Após rodar os microserviços, navegue até a pasta do frontend e execute o projeto:
+
+```bash
+cd apps/frontend
+npm install
+npm start
+```
+
+Isso iniciará o frontend na porta 3000.
+5. Acessando o projeto no navegador
+
+Após os microserviços e o frontend estarem rodando, você poderá acessar o projeto via navegador:
+
+http://localhost:3000
+
+
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT. Isso significa que você pode usá-lo, modificá-lo e distribuí-lo livremente, desde que mantenha o aviso de copyright original. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 
 
