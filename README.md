@@ -177,7 +177,9 @@ http://localhost:3000
 
 
 
-Autenticação MIT
+## Licença
+
+Este projeto está licenciado sob a Licença MIT. Isso significa que você pode usá-lo, modificá-lo e distribuí-lo livremente, desde que mantenha o aviso de copyright original. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 
 
