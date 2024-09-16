@@ -1,14 +1,14 @@
 package com.fiap.msproduct.controllers;
 import com.fiap.msproduct.controllers.exceptions.ValidationTrigger;
 import com.fiap.msproduct.dto.CreateProductDto;
-import com.fiap.msproduct.dto.UpdateProdutDto;
+import com.fiap.msproduct.dto.ProductDto;
+import com.fiap.msproduct.dto.UpdateProductDto;
 import com.fiap.msproduct.models.Product;
-import com.fiap.msproduct.models.SoldProduct;
+import com.fiap.msproduct.dto.SoldProductDto;
 import com.fiap.msproduct.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -17,46 +17,62 @@ import java.util.UUID;
 @RestController
 @RequestMapping("products")
 @AllArgsConstructor
+@Slf4j
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("list")
-    public ResponseEntity<List<Product>> findAll() {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(this.productService.findAll());
+    @GetMapping("/list")
+    public List<ProductDto> findAll() {
+        List<Product> products = this.productService.findAll();
+        return products.stream().map(p -> new ProductDto(
+                p.getId(),
+                p.getName(),
+                p.getImageUrl(),
+                p.getQuantity(),
+                p.getPrice()
+        )).toList();
     }
 
-    @PostMapping()
-    public ResponseEntity<Product> create(
+    @PostMapping("/add-product")
+    public ProductDto addProduct(
             @RequestBody @Valid CreateProductDto dto,
             BindingResult bindingResult) {
         new ValidationTrigger(bindingResult).verify();
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(this.productService.create(dto.name(), dto.imageUrl(), dto.quantity(), dto.price()));
+        Product product = this.productService.create(dto.name(), dto.imageUrl(), dto.quantity(), dto.price());
+        return new ProductDto(
+                product.getId(),
+                product.getName(),
+                product.getImageUrl(),
+                product.getQuantity(),
+                product.getPrice()
+                );
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Product> update(
+    public void update(
             @PathVariable UUID id,
-            @RequestBody @Valid UpdateProdutDto dto,
+            @RequestBody UpdateProductDto dto,
             BindingResult bindingResult) {
         new ValidationTrigger(bindingResult).verify();
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(this.productService.update(id, dto.name(), dto.imageUrl(), dto.quantity(), dto.price()));
+        this.productService.update(id, dto.name(), dto.imageUrl(), dto.quantity(), dto.price());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> update(
+    public ProductDto getOneProduct(
             @PathVariable UUID id) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(this.productService.findById(id));
+        Product product =  this.productService.findById(id);
+        return new ProductDto(
+                product.getId(),
+                product.getName(),
+                product.getImageUrl(),
+                product.getQuantity(),
+                product.getPrice()
+        );
     }
 
-    @PatchMapping("remove-product")
-    public ResponseEntity<List<SoldProduct>> update(
-            @RequestBody List<SoldProduct> body) {
+    @PatchMapping("/remove-product")
+    public void removeProduct(
+            @RequestBody List<SoldProductDto> body) {
         this.productService.removeProduct(body);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(body);
     }
 }

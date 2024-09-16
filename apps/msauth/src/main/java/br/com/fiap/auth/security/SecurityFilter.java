@@ -1,5 +1,6 @@
 package br.com.fiap.auth.security;
 
+import br.com.fiap.auth.entity.User;
 import br.com.fiap.auth.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -27,11 +27,11 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recoverToken(request);
         if (token != null) {
             var login = tokenService.validateToken(token);
-            UserDetails user = userRepository.findByLogin(login);
+            User user = userRepository.findByLogin(login);
 
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            response.setHeader("user", login);
+            response.setHeader("user-id", login);
         }
         filterChain.doFilter(request, response);
     }
@@ -41,5 +41,12 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (authHeader == null)
             return null;
         return authHeader.replace("Bearer ", "");
+    }
+
+    public String getById(HttpServletRequest request) {
+        var token = this.recoverToken(request);
+        var login = tokenService.validateToken(token);
+        User user = userRepository.findByLogin(login);
+        return user.getId();
     }
 }

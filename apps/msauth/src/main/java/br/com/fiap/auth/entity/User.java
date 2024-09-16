@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class User implements UserDetails {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+            "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
     );
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
             "^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$"

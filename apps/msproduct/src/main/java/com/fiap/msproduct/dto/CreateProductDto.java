@@ -9,7 +9,7 @@ public record CreateProductDto(
         @NotBlank(message = "O campo 'imageUrl' deve ser preenchido.")
         String imageUrl,
         @NotNull(message = "O campo 'quantidade' deve ser preenchido.")
-        Long price,
+        Double price,
         @NotNull(message = "O campo 'quantity' deve ser preenchido.")
         Long quantity
 ) {

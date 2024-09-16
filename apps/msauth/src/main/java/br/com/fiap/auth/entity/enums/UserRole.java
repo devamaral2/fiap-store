@@ -2,7 +2,7 @@ package br.com.fiap.auth.entity.enums;
 
 public enum UserRole {
     ADMIN("admin"),
-    USER("user");
+    CLIENT("client");
 
     private final String role;
 

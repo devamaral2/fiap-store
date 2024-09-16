@@ -1,12 +1,12 @@
 package br.com.fiap.mscart.dto;
 
-import br.com.fiap.mscart.models.CartItem;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import java.util.UUID;
+
 
 public record UpdateCartDto(
-        UUID clienteId,
-        List<CartItem> cartItems
+        @NotNull(message = "A lista de CartItems deve estar na requisição")
+        List<CartItemDto> cartItems
 ) {
 }

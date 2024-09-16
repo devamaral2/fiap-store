@@ -1,9 +1,11 @@
 package com.fiap.msproduct.dto;
 
-public record UpdateProdutDto(
+import java.util.UUID;
+
+public record ProductDto(
+        UUID id,
         String name,
         String imageUrl,
         Long quantity,
-        Long price
-) {
+        Double price) {
 }

@@ -20,7 +20,7 @@ services:
     volumes:
       - postgres1_data:/var/lib/postgresql/data
 
- postgres2:
+  postgres2:
    image: postgres:16.3-alpine3.20
    container_name: products
    environment:
@@ -32,7 +32,7 @@ services:
    volumes:
      - postgres2_data:/var/lib/postgresql/data
 
- postgres3:
+  postgres3:
    image: postgres:16.3-alpine3.20
    container_name: carts
    environment:
@@ -44,7 +44,7 @@ services:
    volumes:
      - postgres3_data:/var/lib/postgresql/data
 
- postgres4:
+  postgres4:
    image: postgres:16.3-alpine3.20
    container_name: payment
    environment:

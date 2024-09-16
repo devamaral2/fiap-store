@@ -3,6 +3,7 @@ package br.com.fiap.auth.service;
 import br.com.fiap.auth.dto.RegisterResponse;
 import br.com.fiap.auth.dto.UserRequest;
 import br.com.fiap.auth.entity.User;
+import br.com.fiap.auth.entity.enums.UserRole;
 import br.com.fiap.auth.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,6 +36,7 @@ public class UserService {
                 .login(data.email())
                 .password(encryptedPassword)
                 .salt(salt)
+                .role(UserRole.ADMIN)
                 .build();
 
         User createdUser = this.repository.save(newUser);

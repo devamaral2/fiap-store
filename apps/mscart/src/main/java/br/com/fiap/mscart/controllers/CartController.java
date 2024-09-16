@@ -1,14 +1,11 @@
 package br.com.fiap.mscart.controllers;
-import br.com.fiap.mscart.controllers.exceptions.ValidationTrigger;
+import br.com.fiap.mscart.dto.CartItemDto;
 import br.com.fiap.mscart.dto.UpdateCartDto;
-import br.com.fiap.mscart.models.Cart;
 import br.com.fiap.mscart.models.CartItem;
-import br.com.fiap.mscart.models.ClearCartResponse;
 import br.com.fiap.mscart.services.CartService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,31 +15,35 @@ import java.util.UUID;
 @RestController
 @RequestMapping("carts")
 @AllArgsConstructor
+@Slf4j
 public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Cart> findByClientId(@PathVariable UUID id) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(this.cartService.findByClientId(id));
+    @GetMapping("/{id}/find")
+    public List<CartItemDto> findByClientId(@PathVariable UUID id) {
+        log.info(String.valueOf(id));
+        List<CartItem> list =  this.cartService.findByClientId(id);
+        return list.stream().map(i -> new CartItemDto(
+                i.getId(),
+                i.getProductId(),
+                i.getQuantity(),
+                i.getPrice(),
+                i.getCart().getId()
+        )).toList();
     }
 
     @PatchMapping("/{id}/update-cart")
-    public ResponseEntity<List<CartItem>> updateCart(
-            @RequestBody @Valid UpdateCartDto dto,
-            BindingResult bindingResult) {
-        new ValidationTrigger(bindingResult).verify();
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(this.cartService.updateCart(dto.clienteId(), dto.cartItems()));
+    public void updateCart(
+            @RequestBody UpdateCartDto dto,
+            @PathVariable String id) {
+        UUID uuid = UUID.fromString(id);
+        this.cartService.updateCart(uuid, dto.cartItems());
     }
 
     @PatchMapping("/{id}/clear-cart")
-    public ResponseEntity<ClearCartResponse> update(
+    public void clearCart(
             @PathVariable UUID id) {
         this.cartService.clearCart(id);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ClearCartResponse("Cart esvaziado com sucesso"));
     }
 }

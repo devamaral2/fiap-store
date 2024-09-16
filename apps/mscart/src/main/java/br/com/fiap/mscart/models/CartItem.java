@@ -19,9 +19,7 @@ public class CartItem {
     @Column(name = "product_id")
     private UUID productId;
     private Long quantity;
-    private Long price;
-    @Column(name = "cart_id")
-    private UUID cartId;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")

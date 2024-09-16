@@ -1,4 +1,4 @@
-package com.fiap.msproduct.models;
+package br.com.fiap.auth.entity;
 
 import lombok.*;
 
