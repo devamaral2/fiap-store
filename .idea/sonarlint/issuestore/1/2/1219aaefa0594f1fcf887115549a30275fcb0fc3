@@ -1,0 +1,11 @@
+
+
+java:S1450*"SRemove the "name" field and declare it as a local variable in the relevant methods.(Λ¥ΌJ$90326807-b577-4f45-b649-fc47184c3841
+
+java:S1450'"WRemove the "password" field and declare it as a local variable in the relevant methods.(γλ­ϊÿÿÿÿJ$450998ce-7e2c-4142-84b7-5929751eba1c
+
+java:S1450)"SRemove the "salt" field and declare it as a local variable in the relevant methods.(©‹½J$1b909e83-5e50-4456-be3b-f0bf933df037
+m
+java:S1068'",Remove this unused "password" private field.(γλ­ϊÿÿÿÿJ$090f4fda-de7d-48ad-958a-553346b00e7a
+d
+java:S1068)"(Remove this unused "salt" private field.(©‹½J$7ce3c7d5-9b05-44cd-a1f5-41cc2653b841
