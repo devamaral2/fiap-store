@@ -10,7 +10,7 @@ RUN mvn clean package -Pprod -DskipTests
 # PACKAGE STAGE
 #
 FROM eclipse-temurin:21-alpine
-COPY --from=build /target/*.jar auth_ms.jar
+COPY --from=build /target/*.jar /app/auth_ms.jar
 EXPOSE 8001
-ENTRYPOINT ["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=prod -Dserver.port=8001 -Duser.timezone=UTC -jar auth_ms.jar"]
+ENTRYPOINT ["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=prod -Dserver.port=8001 -Duser.timezone=UTC -jar /app/auth_ms.jar"]
 
