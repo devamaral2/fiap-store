@@ -1,0 +1,52 @@
+version: '3.8'
+
+volumes:
+  postgres1_data:
+
+services:
+
+  postgres-cart:
+    container_name: postgres-cart
+    image: postgres:16.3-alpine3.20
+
+    environment:
+      POSTGRES_DB: cart_db
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "3Mu9o82cGm0CoejxSEE0INVZhHmWibCS"
+      PGDATA: "/data/postgres"
+      PGPORT: 5434
+
+    volumes:
+       - postgres1_data:/var/lib/postgresql/data
+
+    ports:
+      - "5434:5434"
+    restart: unless-stopped
+
+    networks:
+      - app-network
+
+  cart-ms:
+    image: 'cart-ms:0.0.1'
+    build:
+      context: .
+    container_name: cart_ms
+
+    ports:
+      - "8003:8003"
+
+    networks:
+      - app-network
+
+    environment:
+      WAIT_HOSTS: postgres-cart:5434
+      DB_URI_AUTH: jdbc:postgresql://postgres-cart:5434/cart_db
+      DB_USERNAME_AUTH: postgres
+      DB_PASSWORD_AUTH: 3Mu9o82cGm0CoejxSEE0INVZhHmWibCS
+
+    command: sh -c "/wait && java -jar /app/app.jar"
+
+networks:
+  app-network:
+    driver: bridge
+

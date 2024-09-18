@@ -1,13 +1,13 @@
 server:
-  port: 8082
+  port: 8003
 
 spring:
   application:
     name: mscart
   datasource:
-    url: jdbc:postgresql://localhost:5434/cart_db
-    username: user3
-    password: password3
+    url:      ${db.uri.auth}
+    username: ${db.username.auth}
+    password: ${db.password.auth}
 
 
   jpa:
