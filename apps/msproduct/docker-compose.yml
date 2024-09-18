@@ -1,0 +1,52 @@
+version: '3.8'
+
+volumes:
+  postgres1_data:
+
+services:
+
+  postgres-product:
+    container_name: postgres-product
+    image: postgres:16.3-alpine3.20
+
+    environment:
+      POSTGRES_DB: products_db
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "3Mu9o82cGm0CoejxSEE0INVZhHmWibCS"
+      PGDATA: "/data/postgres"
+      PGPORT: 5433
+
+    volumes:
+       - postgres1_data:/var/lib/postgresql/data
+
+    ports:
+      - "5433:5433"
+    restart: unless-stopped
+
+    networks:
+      - app-network
+
+  product-ms:
+    image: 'product-ms:0.0.1'
+    build:
+      context: .
+    container_name: product_ms
+
+    ports:
+      - "8002:8002"
+
+    networks:
+      - app-network
+
+    environment:
+      WAIT_HOSTS: postgres-product:5433
+      DB_URI_AUTH: jdbc:postgresql://postgres-product:5433/products_db
+      DB_USERNAME_AUTH: postgres
+      DB_PASSWORD_AUTH: 3Mu9o82cGm0CoejxSEE0INVZhHmWibCS
+
+    command: sh -c "/wait && java -jar /app/app.jar"
+
+networks:
+  app-network:
+    driver: bridge
+

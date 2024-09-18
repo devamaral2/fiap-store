@@ -1,13 +1,13 @@
 server:
-  port: 8081
+  port: 8002
 
 spring:
   application:
     name: msproduct
   datasource:
-    url: jdbc:postgresql://localhost:5433/products_db
-    username: user2
-    password: password2
+    url:      ${db.uri.auth}
+    username: ${db.username.auth}
+    password: ${db.password.auth}
 
   jpa:
     hibernate:
