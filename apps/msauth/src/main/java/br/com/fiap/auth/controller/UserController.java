@@ -1,27 +1,31 @@
 package br.com.fiap.auth.controller;
 
-import br.com.fiap.auth.entity.User;
-import br.com.fiap.auth.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import br.com.fiap.auth.dto.UserDTO;
+import br.com.fiap.auth.mapper.UserMapper;
+import br.com.fiap.auth.repository.UserRepository;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("users")
+@AllArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserRepository repository;
+    private final UserRepository repository;
+    private final UserMapper userMapper;
 
     @GetMapping
-    public ResponseEntity getAllUsers() {
-        List<User> users = this.repository.findAll();
-
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+    	
+    	List<UserDTO> listUserDTO = repository.findAll().stream().map(userMapper::toDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(listUserDTO);
     }
 
 }
