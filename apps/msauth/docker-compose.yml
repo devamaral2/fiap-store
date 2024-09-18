@@ -1,37 +1,51 @@
 version: '3.8'
 
 volumes:
-  #  auth-db:
   postgres1_data:
 
 services:
-  #  auth-ms:
-  #    build:
-  #      context: .
-  #      dockerfile: Dockerfile
-  #    container_name: auth-ms
-  #    ports:
-  #      - "8001:8001"
-  postgres1:
+
+  postgres-auth:
+    container_name: postgres-auth
     image: postgres:16.3-alpine3.20
-    container_name: clientes
+
     environment:
-      POSTGRES_USER: user1
-      POSTGRES_PASSWORD: password1
       POSTGRES_DB: clients_db
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "3Mu9o82cGm0CoejxSEE0INVZhHmWibCS"
+      PGDATA: "/data/postgres"
+
+    volumes:
+       - postgres1_data:/var/lib/postgresql/data
+
     ports:
       - "5432:5432"
-    volumes:
-      - postgres1_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
-#  mongodb:
-#    image: mongo:5.0-rc-focal
-#    container_name: auth-db
-#    ports:
-#      - '27018:27017'
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: admin
-#      MONGO_INITDB_ROOT_PASSWORD: 12345
-#      MONGO_INITDB_DATABASE: auth-db
-#    volumes:
-#      - auth-db:/data/db
+    networks:
+      - app-network
+
+  auth-ms:
+    image: 'auth-ms:0.0.1'
+    build:
+      context: .
+    container_name: auth_ms
+
+    ports:
+      - "8001:8001"
+
+    networks:
+      - app-network
+
+    environment:
+      WAIT_HOSTS: postgres-auth:5432
+      DB_URI_AUTH: jdbc:postgresql://postgres-auth:5432/clients_db
+      DB_USERNAME_AUTH: postgres
+      DB_PASSWORD_AUTH: 3Mu9o82cGm0CoejxSEE0INVZhHmWibCS
+
+    command: sh -c "/wait && java -jar /app/auth_ms.jar"
+
+networks:
+  app-network:
+    driver: bridge
+

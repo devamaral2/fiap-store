@@ -1,27 +1,16 @@
-# Etapa 1: Construir a aplicação
-FROM jelastic/maven:3.9.5-openjdk-21 AS build
+#
+# BUILD STAGE
+#
+FROM maven:3-eclipse-temurin-21-alpine AS build
+COPY . .
+RUN mvn clean package -Pprod -DskipTests
 
-# Definir o diretório de trabalho
-WORKDIR /app
 
-# Copiar os arquivos de configuração do Maven
-COPY pom.xml ./
-COPY src ./src
+#
+# PACKAGE STAGE
+#
+FROM eclipse-temurin:21-alpine
+COPY --from=build /target/*.jar auth_ms.jar
+EXPOSE 8001
+ENTRYPOINT ["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=prod -Dserver.port=8001 -Duser.timezone=UTC -jar auth_ms.jar"]
 
-# Construir a aplicação
-RUN mvn clean package -Dmaven.test.skip=true
-
-# Etapa 2: Criar a imagem final
-FROM openjdk:21-slim
-
-# Definir o diretório de trabalho
-WORKDIR /app
-
-# Copiar o JAR da etapa de construção
-COPY --from=build /app/target/*.jar app.jar
-
-# Expor a porta em que a aplicação irá rodar
-EXPOSE 8081
-
-# Comando para executar a aplicação
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]

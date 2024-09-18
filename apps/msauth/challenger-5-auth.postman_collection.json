@@ -1,0 +1,105 @@
+{
+	"info": {
+		"_postman_id": "3674c534-7e9d-4c6f-9810-ec352af4a681",
+		"name": "challenger-5-auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10581098",
+		"_collection_link": "https://speeding-firefly-204013.postman.co/workspace/Labs~6d81df6c-41ee-4a32-9130-7a0b2c010267/collection/10581098-3674c534-7e9d-4c6f-9810-ec352af4a681?action=share&source=collection_link&creator=10581098"
+	},
+	"item": [
+		{
+			"name": "list-users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6ImVtYWlsMUBmaWFwLmNvbS5iciIsImV4cCI6MTcyNjYzNTU2OX0.puie4-xVznmYvvALpxOvD0ynx_3paeyVSnqPxBJK5zI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8001/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"name\",\n    \"email\": \"email1@fiap.com.br\",\n    \"password\":\"password\",\n    \"UserRole\": \"admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8001/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"auth",
+						"register"
+					]
+				},
+				"description": "Generated from cURL:  curl -d j_username=admin -d j_password=admin -L http://localhost:8001/app/j_spring_security_check"
+			},
+			"response": []
+		},
+		{
+			"name": "get-token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"email1@fiap.com.br\", \n    \"password\": \"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8001/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"auth",
+						"login"
+					]
+				},
+				"description": "Generated from cURL: curl --location 'http://localhost:8001/auth/login' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"email\": \"andre.sferreira@gmail.com\", \n    \"password\": \"password\"\n}'"
+			},
+			"response": []
+		}
+	]
+}
