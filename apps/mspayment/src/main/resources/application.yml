@@ -1,13 +1,13 @@
 server:
-  port: 8083
+  port: 8004
 
 spring:
   application:
     name: mspayment
   datasource:
-    url: jdbc:postgresql://localhost:5435/payment_db
-    username: user4
-    password: password4
+    url:      ${db.uri.auth}
+    username: ${db.username.auth}
+    password: ${db.password.auth}
 
   jpa:
     hibernate:

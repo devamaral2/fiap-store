@@ -1,0 +1,52 @@
+version: '3.8'
+
+volumes:
+  postgres1_data:
+
+services:
+
+  postgres-payment:
+    container_name: postgres-payment
+    image: postgres:16.3-alpine3.20
+
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "3Mu9o82cGm0CoejxSEE0INVZhHmWibCS"
+      PGDATA: "/data/postgres"
+      PGPORT: 5435
+
+    volumes:
+       - postgres1_data:/var/lib/postgresql/data
+
+    ports:
+      - "5435:5435"
+    restart: unless-stopped
+
+    networks:
+      - app-network
+
+  payment-ms:
+    image: 'payment-ms:0.0.1'
+    build:
+      context: .
+    container_name: payment_ms
+
+    ports:
+      - "8004:8004"
+
+    networks:
+      - app-network
+
+    environment:
+      WAIT_HOSTS: postgres-payment:5435
+      DB_URI_AUTH: jdbc:postgresql://postgres-payment:5435/payment_db
+      DB_USERNAME_AUTH: postgres
+      DB_PASSWORD_AUTH: 3Mu9o82cGm0CoejxSEE0INVZhHmWibCS
+
+    command: sh -c "/wait && java -jar /app/app.jar"
+
+networks:
+  app-network:
+    driver: bridge
+
