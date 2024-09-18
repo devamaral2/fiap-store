@@ -157,6 +157,7 @@ cd apps/msauth
 
 Repita esse comando para cada um dos outros serviços (msproduct, mscart, mspayment), trocando o diretório correspondente.
 
+Obs: Após você rodar o microserviço de produtos utilize o arquivo database.sql para preencher o banco de dados com os produtos da loja
 
 4. Rodando o frontend
 
@@ -164,8 +165,8 @@ Após rodar os microserviços, navegue até a pasta do frontend e execute o proj
 
 ```bash
 cd apps/frontend
-npm install
-npm start
+bun install
+bun run dev 
 ```
 
 Isso iniciará o frontend na porta 3000.

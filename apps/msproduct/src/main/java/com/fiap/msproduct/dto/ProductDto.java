@@ -7,5 +7,8 @@ public record ProductDto(
         String name,
         String imageUrl,
         Long quantity,
-        Double price) {
+        Double price,
+        String category,
+        String description
+) {
 }

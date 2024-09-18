@@ -29,7 +29,9 @@ public class ProductController {
                 p.getName(),
                 p.getImageUrl(),
                 p.getQuantity(),
-                p.getPrice()
+                p.getPrice(),
+                p.getCategory(),
+                p.getDescription()
         )).toList();
     }
 
@@ -38,13 +40,15 @@ public class ProductController {
             @RequestBody @Valid CreateProductDto dto,
             BindingResult bindingResult) {
         new ValidationTrigger(bindingResult).verify();
-        Product product = this.productService.create(dto.name(), dto.imageUrl(), dto.quantity(), dto.price());
+        Product p = this.productService.create(dto.name(), dto.imageUrl(), dto.quantity(), dto.price(), dto.category(), dto.description());
         return new ProductDto(
-                product.getId(),
-                product.getName(),
-                product.getImageUrl(),
-                product.getQuantity(),
-                product.getPrice()
+                p.getId(),
+                p.getName(),
+                p.getImageUrl(),
+                p.getQuantity(),
+                p.getPrice(),
+                p.getCategory(),
+                p.getDescription()
                 );
     }
 
@@ -54,19 +58,21 @@ public class ProductController {
             @RequestBody UpdateProductDto dto,
             BindingResult bindingResult) {
         new ValidationTrigger(bindingResult).verify();
-        this.productService.update(id, dto.name(), dto.imageUrl(), dto.quantity(), dto.price());
+        this.productService.update(id, dto.name(), dto.imageUrl(), dto.quantity(), dto.price(), dto.description());
     }
 
     @GetMapping("/{id}")
     public ProductDto getOneProduct(
             @PathVariable UUID id) {
-        Product product =  this.productService.findById(id);
+        Product p =  this.productService.findById(id);
         return new ProductDto(
-                product.getId(),
-                product.getName(),
-                product.getImageUrl(),
-                product.getQuantity(),
-                product.getPrice()
+                p.getId(),
+                p.getName(),
+                p.getImageUrl(),
+                p.getQuantity(),
+                p.getPrice(),
+                p.getCategory(),
+                p.getDescription()
         );
     }
 

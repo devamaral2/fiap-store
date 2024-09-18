@@ -1,7 +1,5 @@
 package br.com.fiap.auth.controller;
 
-import br.com.fiap.auth.controller.exceptions.StandardError;
-import br.com.fiap.auth.dto.RegisterResponse;
 import br.com.fiap.auth.dto.UserAuthRequest;
 import br.com.fiap.auth.dto.UserAuthResponse;
 import br.com.fiap.auth.dto.UserRequest;
@@ -10,7 +8,6 @@ import br.com.fiap.auth.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,26 +33,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid UserRequest data) {
+    public void register(@RequestBody UserRequest data) {
         try {
-
-            RegisterResponse response = this.userService.register(data);
-            if (response == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        StandardError.builder()
-                                .status(HttpStatus.BAD_REQUEST.value())
-                                .message("Este email já está cadastrado no nosso banco de dados")
-                                .path("/register")
-                );
-            }
-            return ResponseEntity.ok(response);
-        } catch (Exception error) {
-            return ResponseEntity.badRequest().body(
-                    StandardError.builder()
-                            .status(HttpStatus.BAD_REQUEST.value())
-                            .message(error.getMessage())
-                            .path("/register")
-            );
+            this.userService.register(data);
+        } catch (Exception e) {
+            log.info(data.toString());
+            log.error(e.toString());
         }
     }
 }

@@ -1,16 +1,20 @@
 "use client";
-import { Suspense, useEffect, useState } from "react";
+import VerticalCard from "@/components/Cards/VerticalCard/VerticalCard";
 import WrapperWithTitle from "@/components/WrapperWithTitle/WrapperWithTitle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSearchParams, useRouter } from "next/navigation";
-import VerticalCard from "@/components/Cards/VerticalCard/VerticalCard";
+import { useAuthContext } from "@/context/auth-context";
+import { useGlobalContext } from "@/context/global-context";
 import ProductsMock from "@/mock/products-mock";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 function PLPScreen() {
   const [type, setType] = useState<"products" | "services">("products");
   const searchParams = useSearchParams();
+  const { products } = useGlobalContext();
   const router = useRouter();
   const param = searchParams.get("type");
+  useAuthContext();
 
   useEffect(() => {
     if (param === "products") {
@@ -22,6 +26,10 @@ function PLPScreen() {
       setType("products");
     }
   }, [param]);
+
+  if (!products) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="items-center justify-items-center min-h-[40dvw] p-8 pb-20 gap-16 sm:p-20 bg-white">

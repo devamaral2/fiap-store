@@ -5,6 +5,7 @@ public record UpdateProductDto(
         String name,
         String imageUrl,
         Double price,
-        Long quantity
+        Long quantity,
+        String description
 ) {
 }

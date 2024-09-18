@@ -1,19 +1,19 @@
 "use client";
-import { FaShoppingCart } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import HorizontalCard from "@/components/Cards/HorizontalCard/HorizontalCard";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Separator } from "@/components/ui/separator";
-import HorizontalCard from "@/components/Cards/HorizontalCard/HorizontalCard";
 import { useGlobalContext } from "@/context/global-context";
+import { useRouter } from "next/navigation";
+import { FaShoppingCart } from "react-icons/fa";
 
 const ShoppingCart: React.FC = () => {
   const router = useRouter();

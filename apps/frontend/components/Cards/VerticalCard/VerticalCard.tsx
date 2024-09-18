@@ -1,3 +1,5 @@
+import Counter from "@/components/Counter/Counter";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,13 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import Counter from "@/components/Counter/Counter";
-import Image from "next/image";
-import { useState } from "react";
 import { useGlobalContext } from "@/context/global-context";
 import { ProductsDTO } from "@/mock/products-mock";
+import Image from "next/image";
+import { useState } from "react";
 
 const VerticalCard: React.FC<Omit<ProductsDTO, "quantity">> = (props) => {
   const [quantity, setQuantity] = useState(1);
@@ -21,7 +21,7 @@ const VerticalCard: React.FC<Omit<ProductsDTO, "quantity">> = (props) => {
     <Card className="w-[30%] min-w-[350px] hover:shadow-lg hover:scale-105 transition-all duration-300">
       <CardHeader className="w-full h-auto relative">
         <Image
-          src={props.image}
+          src={props.imageUrl}
           alt={props.name}
           width={300}
           height={300}

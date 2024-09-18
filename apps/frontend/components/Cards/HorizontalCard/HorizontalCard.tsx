@@ -1,8 +1,8 @@
 "use client";
+import { useGlobalContext } from "@/context/global-context";
+import { ProductsDTO } from "@/mock/products-mock";
 import Image from "next/image";
 import { IoMdClose } from "react-icons/io";
-import { ProductsDTO } from "@/mock/products-mock";
-import { useGlobalContext } from "@/context/global-context";
 
 const HorizontalCard: React.FC<ProductsDTO> = (props) => {
   const { removeFromCart } = useGlobalContext();
@@ -10,7 +10,7 @@ const HorizontalCard: React.FC<ProductsDTO> = (props) => {
     <div className="w-full h-auto bg-white rounded-lg shadow-md flex flex-row flex-nowrap align-center justify-start hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer px-4 py-2 gap-4 overflow-hidden">
       <div className="w-[120px] h-auto relative rounded-t-lg overflow-hidden rounded-l-lg flex items-center justify-center">
         <Image
-          src={props.image}
+          src={props.imageUrl}
           alt={props.name}
           width={120}
           height={120}

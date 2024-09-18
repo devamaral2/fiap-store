@@ -31,18 +31,20 @@ public class ProductService {
         return  optionalProduct.get();
     }
 
-    public Product create(String name, String imageUrl, Long quantity, Double price) {
+    public Product create(String name, String imageUrl, Long quantity, Double price, String category, String description) {
         Product product = Product
                 .builder()
                 .name(name)
                 .imageUrl(imageUrl)
                 .price(price)
                 .quantity(quantity)
+                .category(category)
+                .description(description)
                 .build();
         return productRepository.save(product);
     }
 
-    public Product update(UUID uuid, String name, String imageUrl, Long quantity, Double price) {
+    public Product update(UUID uuid, String name, String imageUrl, Long quantity, Double price, String description) {
         Optional<Product> optionalProduct = productRepository.findById(uuid);
         if (optionalProduct.isEmpty()) {
             throw new ControllerNotFoundException("Não existe este produto na nossa base de dados");
@@ -51,6 +53,7 @@ public class ProductService {
         String newImageUrl = optionalProduct.get().getImageUrl();
         Long newQuantity = optionalProduct.get().getQuantity();
         Double newPrice = optionalProduct.get().getPrice();
+        String newDescription =  optionalProduct.get().getDescription();
         if (name != null) {
             newName = name;
         }
@@ -63,12 +66,16 @@ public class ProductService {
         if (price != null) {
             newPrice = price;
         }
+        if (description != null) {
+            newDescription = description;
+        }
         Product product = Product
                 .builder()
                 .name(newName)
                 .imageUrl(newImageUrl)
                 .quantity(newQuantity)
                 .price(newPrice)
+                .description(newDescription)
                 .id(optionalProduct.get().getId())
                 .build();
         return productRepository.save(product);
