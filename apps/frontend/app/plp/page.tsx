@@ -4,7 +4,6 @@ import WrapperWithTitle from "@/components/WrapperWithTitle/WrapperWithTitle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthContext } from "@/context/auth-context";
 import { useGlobalContext } from "@/context/global-context";
-import ProductsMock from "@/mock/products-mock";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
@@ -69,21 +68,23 @@ function PLPScreen() {
             value="products"
             className="w-full flex flex-row items-start justify-center gap-6 flex-wrap"
           >
-            {ProductsMock.filter(
-              (product) => product.category === "product"
-            ).map((product) => (
-              <VerticalCard key={product.id} {...product} />
-            ))}
+            {products &&
+              products
+                .filter((product) => product.category === "products")
+                .map((product) => (
+                  <VerticalCard key={product.id} {...product} />
+                ))}
           </TabsContent>
           <TabsContent
             value="services"
             className="w-full flex flex-row items-start justify-center gap-6 flex-wrap"
           >
-            {ProductsMock.filter(
-              (product) => product.category === "service"
-            ).map((service) => (
-              <VerticalCard key={service.id} {...service} />
-            ))}
+            {products &&
+              products
+                .filter((product) => product.category === "services")
+                .map((service) => (
+                  <VerticalCard key={service.id} {...service} />
+                ))}
           </TabsContent>
         </Tabs>
       </WrapperWithTitle>

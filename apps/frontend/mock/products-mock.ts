@@ -4,7 +4,7 @@ interface ProductsDTO {
   description: string;
   price: number;
   imageUrl: string;
-  category: "service" | "product";
+  category: "services" | "products";
   quantity: number;
 }
 

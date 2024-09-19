@@ -1,5 +1,6 @@
 "use client";
 import { ProductsDTO } from "@/mock/products-mock";
+import axios from "axios";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const GlobalContext = createContext({});
@@ -49,9 +50,19 @@ const GlobalProvider = ({ children }: any) => {
     0
   );
 
+  const fetch = async () => {
+    const { data } = await axios.get("http://localhost:8001/products/list");
+    console.log(data);
+    setProducts(data);
+  };
+
   useEffect(() => {
     setTotalPrice(priceCalculator);
   }, [cart]);
+
+  useEffect(() => {
+    fetch();
+  }, []);
 
   const memoizedContext = (obj: any) => useMemo(() => obj, [obj]);
   const context: GlobalProviderDTO = memoizedContext({
