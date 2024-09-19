@@ -141,11 +141,11 @@ Na raiz do projeto, há um arquivo docker-compose.yml que configura os bancos de
 docker-compose up -d
 ```
 
-Esse comando criará e iniciará os containers dos microserviços e banco de dados para cada serviço.
+Esse comando criará e iniciará os containers dos microserviços e banco de dados para cada serviço. Caso queira subir os microserviços de forma individualizada existe um arquivo "docker-compose.yml" disponível em cada diretório dos microserviços.
 
 Obs: Após você rodar o microserviço de produtos utilize o arquivo database.sql para preencher o banco de dados com os produtos da loja
 
-3. Rodando o frontend
+### 3. Rodando o frontend
 
 Após rodar os microserviços, navegue até a pasta do frontend e execute o projeto:
 
