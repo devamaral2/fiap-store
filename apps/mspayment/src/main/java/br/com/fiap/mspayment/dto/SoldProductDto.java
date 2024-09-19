@@ -1,4 +1,4 @@
-package br.com.fiap.mspayment.models;
+package br.com.fiap.mspayment.dto;
 
 import lombok.*;
 

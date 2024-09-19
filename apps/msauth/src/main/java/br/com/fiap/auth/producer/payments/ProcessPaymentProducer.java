@@ -5,7 +5,7 @@ import br.com.fiap.auth.dto.ProcessPaymentResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(value = "process-payment", url = "http://localhost:8083/payments")
+@FeignClient(value = "process-payment", url = "http://localhost:8004/payments")
 public interface ProcessPaymentProducer {
 
     @PostMapping("/process-payment")

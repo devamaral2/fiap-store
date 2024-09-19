@@ -1,7 +1,5 @@
 "use client";
 import { ProductsDTO } from "@/mock/products-mock";
-import axios from "axios";
-import { parseCookies } from "nookies";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const GlobalContext = createContext({});
@@ -51,24 +49,9 @@ const GlobalProvider = ({ children }: any) => {
     0
   );
 
-  async function getProducts() {
-    const cookies = parseCookies();
-    const { data } = await axios.get("http://localhost:8080/products/list", {
-      headers: {
-        Authorization: `Bearer ${cookies.token}`,
-      },
-    });
-    console.log(data);
-    setProducts(data);
-  }
-
   useEffect(() => {
     setTotalPrice(priceCalculator);
   }, [cart]);
-
-  useEffect(() => {
-    getProducts();
-  }, []);
 
   const memoizedContext = (obj: any) => useMemo(() => obj, [obj]);
   const context: GlobalProviderDTO = memoizedContext({

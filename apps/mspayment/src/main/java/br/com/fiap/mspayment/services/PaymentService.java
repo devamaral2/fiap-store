@@ -2,7 +2,7 @@ package br.com.fiap.mspayment.services;
 import br.com.fiap.mspayment.dto.CartItemDto;
 import br.com.fiap.mspayment.dto.ProcessPaymentDto;
 import br.com.fiap.mspayment.models.Payment;
-import br.com.fiap.mspayment.models.SoldProductDto;
+import br.com.fiap.mspayment.dto.SoldProductDto;
 import br.com.fiap.mspayment.producers.CartProducer;
 import br.com.fiap.mspayment.producers.ClearCartProducer;
 import br.com.fiap.mspayment.producers.ProductProducer;

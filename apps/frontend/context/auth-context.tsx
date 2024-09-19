@@ -20,7 +20,7 @@ const AuthProvider = ({ children }: any) => {
     if (formData.get("password") !== formData.get("password2")) {
       return;
     }
-    await axios.post("http://localhost:8080/auth/register", {
+    await axios.post("http://localhost:8001/auth/register", {
       email: formData.get("email"),
       name: formData.get("name"),
       password: formData.get("password"),
@@ -31,10 +31,18 @@ const AuthProvider = ({ children }: any) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    const { data } = await axios.post("http://localhost:8080/auth/login", {
-      email: formData.get("email"),
-      password: formData.get("password"),
-    });
+    const { data } = await axios.post(
+      "http://localhost:8001/auth/login",
+      {
+        email: formData.get("email"),
+        password: formData.get("password"),
+      },
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+        },
+      }
+    );
     const TWO_HOURS_IN_SECONDS = 2 * 60 * 60;
 
     setCookie(null, "token", data.token, {
