@@ -90,24 +90,24 @@ IMAGEM TELA5
 ### Descrição dos Microserviços:
 
 
-1. **Microserviço de Login** (porta 8000):
+1. **Microserviço de Login** (porta 8001):
    - Gerencia o cadastro e login de usuários.
    - Verifica se o usuário tem permissão (autorização) para executar determinadas ações.
    - Usa o **Spring Security** para autenticação e autorização.
    - Armazena informações como: nome de usuário, senha e role (papel, ex: admin ou cliente).
 
-2. **Microserviço de Produtos** (porta 8001):
+2. **Microserviço de Produtos** (porta 8002):
    - Lista e gerencia produtos (nome, preço, estoque, etc.).
    - Verifica a disponibilidade de itens no estoque.
    - Autentica usuários e permite operações baseadas em seu papel.
    - Utiliza validações para garantir a integridade dos dados.
 
-3. **Microserviço de Carrinho** (porta 8002):
+3. **Microserviço de Carrinho** (porta 8003):
    - Gerencia o estado do carrinho de compras entre as sessões.
    - Permite adicionar e remover produtos no carrinho.
    - Usa **Spring WebFlux** para permitir operações reativas e melhorar a performance em sistemas de alta demanda.
 
-4. **Microserviço de Pagamento** (porta 8003):
+4. **Microserviço de Pagamento** (porta 8004):
    - Processa o pagamento dos itens no carrinho.
    - Confirma o pagamento e atualiza o estoque do produto.
    - Comunicação assíncrona entre o microserviço de carrinho e o de pagamento através do **RabbitMQ** (fila de mensagens).
@@ -133,7 +133,7 @@ git clone https://github.com/devamaral2/fiap-store
 cd seu-projeto
 ```
 
-### 2. Inicie os containers do banco de dados
+### 2. Inicie os containers do backend
 
 Na raiz do projeto, há um arquivo docker-compose.yml que configura os bancos de dados para os 4 microserviços. Para criar os containers dos bancos de dados com volumes persistentes, execute o comando:
 
@@ -141,25 +141,11 @@ Na raiz do projeto, há um arquivo docker-compose.yml que configura os bancos de
 docker-compose up -d
 ```
 
-Esse comando criará e iniciará os containers do PostgreSQL para cada serviço.
-
-### 3. Rodando os microserviços
-
-Cada microserviço (msauth, msproduct, mscart, mspayment) deve ser rodado separadamente. Navegue até a pasta de cada microserviço e execute o Spring Boot usando Maven ou Gradle.
-
-Exemplo para rodar com Maven:
-
-```bash
-cd apps/msauth
-./mvnw spring-boot:run
-```
-
-
-Repita esse comando para cada um dos outros serviços (msproduct, mscart, mspayment), trocando o diretório correspondente.
+Esse comando criará e iniciará os containers dos microserviços e banco de dados para cada serviço.
 
 Obs: Após você rodar o microserviço de produtos utilize o arquivo database.sql para preencher o banco de dados com os produtos da loja
 
-4. Rodando o frontend
+3. Rodando o frontend
 
 Após rodar os microserviços, navegue até a pasta do frontend e execute o projeto:
 
@@ -170,7 +156,7 @@ bun run dev
 ```
 
 Isso iniciará o frontend na porta 3000.
-5. Acessando o projeto no navegador
+4. Acessando o projeto no navegador
 
 Após os microserviços e o frontend estarem rodando, você poderá acessar o projeto via navegador:
 
