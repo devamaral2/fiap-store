@@ -24,21 +24,6 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     public List<CartItem> findByClientId(UUID clientId) {
         Optional<Cart> optionalCart = cartRepository.findByClientId(clientId);
-        if (optionalCart.isEmpty()) {
-            Cart newCart = Cart.builder().clientId(clientId).build();
-            cartRepository.save(newCart);
-        }
-        if (optionalCart.get().getCartItems() == null) {
-            return Collections.emptyList();
-        }
-        return optionalCart.get().getCartItems();
-
-    }
-
-    @Transactional
-    public List<CartItem> updateCart(UUID clientId, List<CartItemDto> cartItemsDto) {
-        
-        Optional<Cart> optionalCart = cartRepository.findByClientId(clientId);
         Cart cart;
         if (optionalCart.isEmpty()) {
             cart = Cart.builder().clientId(clientId).build();
@@ -46,17 +31,30 @@ public class CartService {
         } else {
             cart = optionalCart.get();
         }
+        return optionalCart.get().getCartItems();
+
+    }
+
+    @Transactional
+    public void updateCart(UUID clientId, List<CartItemDto> cartItemsDto) {
+        
+        Optional<Cart> optionalCart = cartRepository.findByClientId(clientId);
+        Cart cart = optionalCart.get();
 
         cartItemRepository.deleteAllByCartId(cart.getId());
-        List<CartItem> updatedCartItems = cartItemsDto.stream()
+        if (!cartItemsDto.isEmpty()) {
+           List<CartItem> updatedCartItems = cartItemsDto.stream()
                 .map(item -> CartItem.builder()
                         .productId(item.productId())
                         .quantity(item.quantity())
                         .price(item.price())
                         .cart(cart)
+                        .imageUrl(item.imageUrl())
+                        .name(item.name())
                         .build())
                 .toList();
-        return cartItemRepository.saveAll(updatedCartItems);
+           cartItemRepository.saveAll(updatedCartItems);
+        }
     }
 
     public void clearCart(UUID clientId) {

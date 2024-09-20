@@ -23,12 +23,14 @@ public class CartController {
     @GetMapping("/{id}/find")
     public List<CartItemDto> findByClientId(@PathVariable UUID id) {
         log.info(String.valueOf(id));
-        List<CartItem> list =  this.cartService.findByClientId(id);
+        List<CartItem> list = this.cartService.findByClientId(id);
         return list.stream().map(i -> new CartItemDto(
                 i.getId(),
                 i.getProductId(),
                 i.getQuantity(),
                 i.getPrice(),
+                i.getImageUrl(),
+                i.getName(),
                 i.getCart().getId()
         )).toList();
     }

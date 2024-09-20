@@ -7,6 +7,8 @@ public record CartItemDto(
         UUID productId,
         Long quantity,
         Double price,
+        String imageUrl,
+        String name,
         UUID cartId
 ) {
 }

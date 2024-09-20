@@ -20,6 +20,8 @@ public class CartItem {
     private UUID productId;
     private Long quantity;
     private Double price;
+    private String imageUrl;
+    private  String name;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")

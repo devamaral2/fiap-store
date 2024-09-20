@@ -27,7 +27,7 @@ public class CartController {
     @GetMapping("/find")
     public List<CartItemDto> getCart(HttpServletRequest request) {
         String id = securityFilter.getById(request);
-        log.info(id + "    Aqui");
+        log.info((id));
         UUID uuid = UUID.fromString(id);
         return cartProducer.findCart(uuid);
     }

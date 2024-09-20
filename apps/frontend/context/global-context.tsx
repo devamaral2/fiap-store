@@ -1,6 +1,7 @@
 "use client";
-import { ProductsDTO } from "@/mock/products-mock";
+import { CartDTO, ProductsDTO } from "@/mock/products-mock";
 import axios from "axios";
+import { parseCookies } from "nookies";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const GlobalContext = createContext({});
@@ -8,9 +9,9 @@ const GlobalContext = createContext({});
 interface GlobalProviderDTO {
   cart: ProductsDTO[];
   products: ProductsDTO[];
-  addToCart: (product: any) => void;
-  removeFromCart: (product: any) => void;
-  clearCart: () => void;
+  addToCart: (product: any) => Promise<void>;
+  removeFromCart: (product: any) => Promise<void>;
+  clearCart: () => Promise<void>;
   totalPrice: number;
 }
 
@@ -19,7 +20,27 @@ const GlobalProvider = ({ children }: any) => {
   const [products, setProducts] = useState<ProductsDTO[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  const addToCart = (product: ProductsDTO) => {
+  const persistanceCart = async (items: ProductsDTO[]) => {
+    const cookies = parseCookies();
+    const cartItems: CartDTO[] = items.map((item) => ({
+      productId: item.id,
+      name: item.name,
+      imageUrl: item.imageUrl,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+    await axios.patch(
+      "http://localhost:8001/carts/update-cart",
+      { cartItems },
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`,
+        },
+      }
+    );
+  };
+
+  const addToCart = async (product: ProductsDTO) => {
     const alreadyInCart = cart.some(
       (item: ProductsDTO) => item.id === product.id
     );
@@ -31,18 +52,23 @@ const GlobalProvider = ({ children }: any) => {
           : item
       );
       setCart(newCart);
+      await persistanceCart(newCart);
     } else {
       setCart([...cart, { ...product }]);
+      await persistanceCart([...cart, { ...product }]);
     }
   };
 
-  const removeFromCart = (productId: number) => {
+  const removeFromCart = async (productId: string) => {
     const newCart = cart.filter((item) => item.id !== productId);
+
     setCart(newCart);
+    await persistanceCart(newCart);
   };
 
-  const clearCart = () => {
+  const clearCart = async () => {
     setCart([]);
+    await persistanceCart([]);
   };
 
   const priceCalculator = cart.reduce(
@@ -50,10 +76,28 @@ const GlobalProvider = ({ children }: any) => {
     0
   );
 
-  const fetch = async () => {
+  const fetchProducts = async () => {
     const { data } = await axios.get("http://localhost:8001/products/list");
-    console.log(data);
     setProducts(data);
+  };
+
+  const fetchCart = async () => {
+    const cookies = parseCookies();
+    const { data } = await axios.get("http://localhost:8001/carts/find", {
+      headers: {
+        Authorization: `Bearer ${cookies.token}`,
+      },
+    });
+
+    const cartItems = data.map((item: CartDTO) => ({
+      id: item.productId,
+      name: item.name,
+      price: item.price,
+      imageUrl: item.imageUrl,
+      quantity: item.quantity,
+    }));
+
+    setCart(cartItems);
   };
 
   useEffect(() => {
@@ -61,7 +105,8 @@ const GlobalProvider = ({ children }: any) => {
   }, [cart]);
 
   useEffect(() => {
-    fetch();
+    fetchProducts();
+    fetchCart();
   }, []);
 
   const memoizedContext = (obj: any) => useMemo(() => obj, [obj]);
