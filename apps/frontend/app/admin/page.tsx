@@ -1,5 +1,25 @@
 "use client";
-import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import WrapperWithTitle from "@/components/WrapperWithTitle/WrapperWithTitle";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,29 +32,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import WrapperWithTitle from "@/components/WrapperWithTitle/WrapperWithTitle";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { parseCookies } from "nookies";
+import * as React from "react";
 
 export type Payment = {
   id: string;
@@ -43,125 +44,134 @@ export type Payment = {
   email: string;
 };
 
-const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
-];
-
 export const columns: ColumnDef<Payment>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
+    accessorKey: "name",
+    header: "Nome",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "description",
+    header: "Descrição",
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="capitalize">{row.getValue("description")}</div>
     ),
-    enableSorting: false,
-    enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "quantity",
+    header: "Quantidade",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="capitalize">{row.getValue("quantity")}</div>
     ),
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    accessorKey: "category",
+    header: "category",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("category")}</div>
+    ),
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "price",
+    header: () => <div className="text-right">Preço</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
+      const price = parseFloat(row.getValue("price"));
 
-      // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL",
-      }).format(amount);
+      }).format(price);
 
       return <div className="text-right font-medium">{formatted}</div>;
     },
   },
   {
-    id: "actions",
-    enableHiding: false,
+    accessorKey: "icon",
+    header: () => <div className="text-right">Editar</div>,
     cell: ({ row }) => {
-      const payment = row.original;
+      const [updateModel, setUpdateModel] = React.useState(false);
+      async function onSubmit(event: any) {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const cookies = parseCookies();
+        const product = {
+          price: formData.get("price"),
+          quantity: formData.get("quantity"),
+          description: formData.get("description"),
+        };
+        await axios.patch(
+          `http://localhost:8001/products/${row.original.id}`,
+          product,
+          {
+            headers: {
+              Authorization: `Bearer ${cookies.token}`,
+            },
+          }
+        );
+        setUpdateModel(false);
+      }
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 text-gray-700">
-              <span className="sr-only text-gray-700">Open menu</span>
-              <MoreHorizontal className="h-4 w-4 text-gray-700" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div>
+          {updateModel && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white w-2/5 h-2/5 p-8 rounded-lg shadow-lg relative">
+                <h2 className="text-2xl font-bold mb-6">
+                  Editar um novo produto
+                </h2>
+                <form className="space-y-4" onSubmit={onSubmit}>
+                  <div>
+                    <Label className="block text-sm font-medium text-gray-700">
+                      Preço
+                    </Label>
+                    <Input
+                      type="number"
+                      name="price"
+                      className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="block text-sm font-medium text-gray-700">
+                      Quantidade
+                    </Label>
+                    <Input
+                      type="number"
+                      name="quantity"
+                      className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="block text-sm font-medium text-gray-700">
+                      Descrição
+                    </Label>
+                    <Input
+                      name="description"
+                      className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200"
+                    ></Input>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button
+                      type="submit"
+                      className="bg-indigo-600 text-white px-4 py-2 rounded-md"
+                    >
+                      Editar item
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+          <Button
+            type="button"
+            className="bg-indigo-600 text-white px-4 py-2 rounded-md"
+            onClick={() => setUpdateModel((p) => !p)}
+          >
+            Editar
+          </Button>
+        </div>
       );
     },
   },
@@ -175,6 +185,39 @@ export function DataTable() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [data, setData] = React.useState([]);
+  const [createModel, setCreateModel] = React.useState(false);
+  const [category, setCategory] = React.useState("products");
+
+  const fetchProducts = async () => {
+    const { data } = await axios.get("http://localhost:8001/products/list");
+    setData(data);
+  };
+
+  React.useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const onSubmit = async (event: any) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const cookies = parseCookies();
+    const product = {
+      name: formData.get("name"),
+      imageUrl: formData.get("imageUrl"),
+      price: formData.get("price"),
+      quantity: formData.get("quantity"),
+      description: formData.get("description"),
+      category,
+    };
+    await axios.post("http://localhost:8001/products/add-product", product, {
+      headers: {
+        Authorization: `Bearer ${cookies.token}`,
+      },
+    });
+    await fetchProducts();
+    setCreateModel(false);
+  };
 
   const table = useReactTable({
     data,
@@ -195,45 +238,121 @@ export function DataTable() {
     },
   });
 
+  if (data.length === 0) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto text-gray-700">
-              Columns <ChevronDown className="ml-2 h-4 w-4 text-gray-700" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border, m-2">
+        <div className="w-ful flex items-center justify-center">
+          {createModel && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white w-2/5 h-3/5 p-8 rounded-lg shadow-lg relative">
+                <h2 className="text-2xl font-bold mb-6">Criar Novo Produto</h2>
+                <form className="space-y-4" onSubmit={onSubmit}>
+                  <div>
+                    <Label className="block text-sm font-medium text-gray-700">
+                      Nome
+                    </Label>
+                    <Input
+                      type="text"
+                      name="name"
+                      className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="block text-sm font-medium text-gray-700">
+                      URL da Imagem
+                    </Label>
+                    <Input
+                      type="text"
+                      name="imageUrl"
+                      className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="block text-sm font-medium text-gray-700">
+                      Preço
+                    </Label>
+                    <Input
+                      type="number"
+                      name="price"
+                      className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="block text-sm font-medium text-gray-700">
+                      Quantidade
+                    </Label>
+                    <Input
+                      type="number"
+                      name="quantity"
+                      className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="block text-sm font-medium text-gray-700">
+                      Descrição
+                    </Label>
+                    <Input
+                      name="description"
+                      className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200"
+                    ></Input>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="category">Categoria</Label>
+                    <Select
+                      value={category}
+                      onValueChange={(value) => {
+                        setCategory(value);
+                      }}
+                    >
+                      <SelectTrigger className="w-full text-gray-500">
+                        <SelectValue
+                          placeholder="Categoria do item"
+                          className="w-full"
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Categoria do item</SelectLabel>
+                          {["products", "services"].map((item) => (
+                            <SelectItem key={item} value={item}>
+                              {item}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button
+                      type="submit"
+                      className="bg-indigo-600 text-white px-4 py-2 rounded-md"
+                    >
+                      Criar Item
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+          <Button
+            variant="default"
+            className="m-5"
+            size="sm"
+            onClick={() => setCreateModel((p) => !p)}
+          >
+            Criar
+          </Button>
+        </div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -313,6 +432,21 @@ export function DataTable() {
 }
 
 export default function Page() {
+  const router = useRouter();
+  async function featchRole() {
+    const cookies = parseCookies();
+    const { data } = await axios.get("http://localhost:8001/users/role", {
+      headers: {
+        Authorization: `Bearer ${cookies.token}`,
+      },
+    });
+    if (data.role !== "ADMIN") {
+      router.push("/");
+    }
+  }
+  React.useEffect(() => {
+    featchRole();
+  }, []);
   return (
     <div className="items-center justify-items-center min-h-[40dvw] p-8 pb-20 gap-16 sm:p-20 bg-white">
       <WrapperWithTitle title="Produtos" subtitle="Area de Administração">

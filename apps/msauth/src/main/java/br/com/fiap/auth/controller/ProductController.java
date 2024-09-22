@@ -37,7 +37,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public void updateProduct(@PathVariable UUID id, @RequestBody @Valid UpdateProductDto body) {
+    public void updateProduct(@PathVariable UUID id, @RequestBody UpdateProductDto body) {
         productUpdateProducer.update(id, body);
     }
 

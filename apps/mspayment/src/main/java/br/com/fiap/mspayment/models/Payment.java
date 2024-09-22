@@ -1,8 +1,6 @@
 package br.com.fiap.mspayment.models;
-
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.UUID;
 
 @Entity
@@ -18,13 +16,12 @@ public class Payment {
     private UUID id;
     @Column(name = "client_id")
     private UUID clientId;
-    private String cpf;
     private String name;
-    @Column(name="payment_method")
-    private String paymentMethod;
+    @Column(name="expiration_date")
+    private String expirationDate;
     @Column(name="card_number")
     private String cardNumber;
-    @Column(name="bank_account")
-    private String bankAccount;
-    private Double value;
+    private String cvv;
+    private String value;
+    private String installments;
 }

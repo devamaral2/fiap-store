@@ -122,12 +122,14 @@ const CreditCardInputs = [
     type: "text",
     id: "cardNumber",
     defaultValue: "",
+    name: "card",
     placeholder: "Digite o número do cartão",
   },
   {
     label: "Nome do Titular",
     type: "text",
     id: "cardHolder",
+    name: "name",
     defaultValue: "",
     placeholder: "Digite o nome do titular",
   },
@@ -136,15 +138,17 @@ const CreditCardInputs = [
     type: "text",
     id: "expirationDate",
     defaultValue: "",
+    name: "date",
     placeholder: "MM/AA",
   },
   {
     label: "CVV",
     type: "text",
     id: "cvv",
+    name: "cvv",
     defaultValue: "",
     placeholder: "Digite o CVV",
   },
 ];
 
-export { ClientInputs, PetInputs, CreditCardInputs };
+export { ClientInputs, CreditCardInputs, PetInputs };

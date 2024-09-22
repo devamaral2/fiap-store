@@ -22,12 +22,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfigurations {
-
-
     private final SecurityFilter securityFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        String admin = "ADMIN";
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(c -> c.configurationSource(corsConfigurationSource()))
@@ -36,8 +35,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/list").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/products/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users").hasRole(admin)
+                        .requestMatchers(HttpMethod.POST, "/products").hasRole(admin)
+                        .requestMatchers(HttpMethod.PATCH, "/products/{id}").hasRole(admin)
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

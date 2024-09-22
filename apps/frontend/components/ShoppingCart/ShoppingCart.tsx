@@ -34,7 +34,7 @@ const ShoppingCart: React.FC = () => {
           </SheetDescription>
         </SheetHeader>
         <Separator className="w-full mb-6 bg-gray-400" />
-        <div className="h-full space-y-2 overflow-y-scroll px-4 py-6 z-10 pb-72">
+        <div className=" space-y-2 overflow-y-scroll px-4 py-6 z-10 pb-72">
           {cart.map((item) => (
             <HorizontalCard key={item.id} {...item} />
           ))}
@@ -51,7 +51,7 @@ const ShoppingCart: React.FC = () => {
                 }).format(totalPrice)}
               </p>
               <Button
-                className="w-full text-lg font-semibold mx-4 py-6 px-4 rounded-lg bg-green-800 hover:bg-green-700"
+                className="w-full text-lg font-semibold mx-4 py-6 px-4 rounded-lg bg-green-800 hover:bg-green-700 static"
                 onClick={() => router.push("/checkout")}
               >
                 Finalizar Compra

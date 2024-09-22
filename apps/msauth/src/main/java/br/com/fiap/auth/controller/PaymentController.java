@@ -1,11 +1,10 @@
 package br.com.fiap.auth.controller;
 
 import br.com.fiap.auth.dto.ProcessPaymentDto;
-import br.com.fiap.auth.dto.ProcessPaymentResponseDto;
+import br.com.fiap.auth.entity.User;
 import br.com.fiap.auth.producer.payments.ProcessPaymentProducer;
 import br.com.fiap.auth.security.SecurityFilter;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,19 +24,21 @@ public class PaymentController {
     private final SecurityFilter securityFilter;
 
     @PostMapping("/process-payment")
-    public ProcessPaymentResponseDto processPayment(HttpServletRequest request, @RequestBody @Valid ProcessPaymentDto dto) {
-        String id = securityFilter.getById(request);
-        UUID uuid = UUID.fromString(id);
+    public void processPayment(HttpServletRequest request, @RequestBody ProcessPaymentDto dto) {
+        User user = securityFilter.getUserByToken(request);
+        UUID uuid = UUID.fromString(user.getId());
         ProcessPaymentDto processPaymentDto = new ProcessPaymentDto(
                 uuid,
-                dto.cpf(),
+                dto.expirationDate(),
                 dto.name(),
-                dto.paymentMethod(),
+                dto.cvv(),
                 dto.cardNumber(),
-                dto.bankAccount());
+                dto.value(),
+                dto.installments()
+        );
 
 
-        return processPaymentProducer.process(processPaymentDto);
+        processPaymentProducer.process(processPaymentDto);
     }
 
 }

@@ -2,6 +2,7 @@ package br.com.fiap.auth.controller;
 
 import br.com.fiap.auth.dto.CartItemDto;
 import br.com.fiap.auth.dto.UpdateCartDto;
+import br.com.fiap.auth.entity.User;
 import br.com.fiap.auth.producer.carts.CartProducer;
 import br.com.fiap.auth.producer.carts.CartUpdateProducer;
 import br.com.fiap.auth.security.SecurityFilter;
@@ -26,16 +27,15 @@ public class CartController {
 
     @GetMapping("/find")
     public List<CartItemDto> getCart(HttpServletRequest request) {
-        String id = securityFilter.getById(request);
-        log.info((id));
-        UUID uuid = UUID.fromString(id);
+        User user = securityFilter.getUserByToken(request);
+        UUID uuid = UUID.fromString(user.getId());
         return cartProducer.findCart(uuid);
     }
 
     @PatchMapping("/update-cart")
     public void updateCart(HttpServletRequest request, @RequestBody @Valid UpdateCartDto body) {
-        String id = securityFilter.getById(request);
-        UUID uuid = UUID.fromString(id);
+        User user = securityFilter.getUserByToken(request);
+        UUID uuid = UUID.fromString(user.getId());
         cartUpdateProducer.update(uuid, body);
     }
 

@@ -4,11 +4,11 @@ import java.util.UUID;
 
 public record ProcessPaymentDto(
         UUID clientId,
-        String cpf,
+        String expirationDate,
         String name,
-        String paymentMethod,
+        String cvv,
         String cardNumber,
-        String bankAccount
+        String value,
+        String installments
 ) {
-
 }

@@ -1,6 +1,16 @@
-version: '3.8'
+version: "3.8"
 
 services:
+  frontend:
+    image: "frontend:0.0.1"
+    build:
+      context: apps/frontend/
+    container_name: frontend
+    restart: always
+    volumes:
+      - .:/app/next-app
+    ports:
+      - "3000:3000"
 
   postgres-auth:
     container_name: postgres-auth
@@ -14,7 +24,7 @@ services:
       PGPORT: 5432
 
     volumes:
-       - postgres1_data:/var/lib/postgresql/data
+      - postgres1_data:/var/lib/postgresql/data
 
     ports:
       - "5432:5432"
@@ -24,7 +34,7 @@ services:
       - app-network
 
   auth-ms:
-    image: 'auth-ms:0.0.1'
+    image: "auth-ms:0.0.1"
     build:
       context: apps/msauth/
     container_name: auth_ms
@@ -55,7 +65,7 @@ services:
       PGPORT: 5433
 
     volumes:
-       - postgres2_data:/var/lib/postgresql/data
+      - postgres2_data:/var/lib/postgresql/data
 
     ports:
       - "5433:5433"
@@ -65,7 +75,7 @@ services:
       - app-network
 
   product-ms:
-    image: 'product-ms:0.0.1'
+    image: "product-ms:0.0.1"
     build:
       context: apps/msproduct
     container_name: product_ms
@@ -96,7 +106,7 @@ services:
       PGPORT: 5434
 
     volumes:
-       - postgres3_data:/var/lib/postgresql/data
+      - postgres3_data:/var/lib/postgresql/data
 
     ports:
       - "5434:5434"
@@ -106,7 +116,7 @@ services:
       - app-network
 
   cart-ms:
-    image: 'cart-ms:0.0.1'
+    image: "cart-ms:0.0.1"
     build:
       context: apps/mscart
     container_name: cart_ms
@@ -137,7 +147,7 @@ services:
       PGPORT: 5435
 
     volumes:
-       - postgres4_data:/var/lib/postgresql/data
+      - postgres4_data:/var/lib/postgresql/data
 
     ports:
       - "5435:5435"
@@ -147,7 +157,7 @@ services:
       - app-network
 
   payment-ms:
-    image: 'payment-ms:0.0.1'
+    image: "payment-ms:0.0.1"
     build:
       context: apps/mspayment
     container_name: payment_ms

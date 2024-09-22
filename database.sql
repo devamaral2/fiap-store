@@ -8,6 +8,6 @@ INSERT INTO products (id, name, image_url, quantity, description, category, pric
 ('550e8400-e29b-41d4-a716-446655440005', 'Fonte de Água Automática para Gatos', '/images/itens/products-6.jpg', 25, 'Fonte de água automática que mantém a água fresca e filtrada para gatos.', 'products', 150.00),
 ('550e8400-e29b-41d4-a716-446655440006', 'Casinha de Transporte para Cães', '/images/itens/products-7.jpg', 40, 'Casinha resistente e confortável para transporte seguro de cães.', 'products', 300.00),
 ('550e8400-e29b-41d4-a716-446655440007', 'Gaiola para Aves de Estimação', '/images/itens/products-8.png', 15, 'Gaiola espaçosa e segura para aves de estimação.', 'products', 200.00),
-('ac21280f-38d3-4177-9d72-edddf7dfe1fd', 'Tosa e Higiene Canina', '/images/itens/services-3.jpg', 0, 'Serviço completo de tosa e higiene para cães, garantindo conforto e estilo.', 'services', 80.00),
-('cc8b66b8-cb01-4b04-9cf5-1c9165b2d8b5', 'Adestramento de Cães', '/images/itens/services-2.jpg', 0, 'Serviço profissional de adestramento para melhorar o comportamento do seu cão.', 'services', 300.00),
-('3bfd22a8-fdbf-4a94-a4af-f7c82346466e', 'Consulta Veterinária', '/images/itens/services-1.jpg', 0, 'Consulta veterinária para avaliação e cuidados de saúde do seu pet.', 'services', 150.00);
+('ac21280f-38d3-4177-9d72-edddf7dfe1fd', 'Tosa e Higiene Canina', '/images/itens/services-3.jpg', 100, 'Serviço completo de tosa e higiene para cães, garantindo conforto e estilo.', 'services', 80.00),
+('cc8b66b8-cb01-4b04-9cf5-1c9165b2d8b5', 'Adestramento de Cães', '/images/itens/services-2.jpg', 100, 'Serviço profissional de adestramento para melhorar o comportamento do seu cão.', 'services', 300.00),
+('3bfd22a8-fdbf-4a94-a4af-f7c82346466e', 'Consulta Veterinária', '/images/itens/services-1.jpg', 100, 'Consulta veterinária para avaliação e cuidados de saúde do seu pet.', 'services', 150.00);

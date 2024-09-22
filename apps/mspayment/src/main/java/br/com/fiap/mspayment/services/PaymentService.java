@@ -34,12 +34,12 @@ public class PaymentService {
                                 .sum();
                 Payment payment = Payment.builder()
                                 .clientId(dto.clientId())
-                                .cpf(dto.cpf())
+                                .expirationDate(dto.expirationDate())
                                 .name(dto.name())
-                                .paymentMethod(dto.paymentMethod())
+                                .cvv(dto.cvv())
                                 .cardNumber(dto.cardNumber())
-                                .bankAccount(dto.bankAccount())
-                                .value(paymentValue)
+                                .installments((dto.installments()))
+                                .value(paymentValue.toString())
                                 .build();
 
                 processPaymentService.exec(payment);

@@ -1,4 +1,6 @@
 "use client";
+import HorizontalCard from "@/components/Cards/HorizontalCard/HorizontalCard";
+import { DatePicker } from "@/components/DatePicker/DatePicker";
 import WrapperWithTitle from "@/components/WrapperWithTitle/WrapperWithTitle";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -18,19 +22,55 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { CreditCardInputs } from "@/mock/inputs-mock";
-import { Switch } from "@/components/ui/switch";
-import { DatePicker } from "@/components/DatePicker/DatePicker";
 import { Separator } from "@/components/ui/separator";
-import HorizontalCard from "@/components/Cards/HorizontalCard/HorizontalCard";
-import Image from "next/image";
+import { Switch } from "@/components/ui/switch";
 import { useGlobalContext } from "@/context/global-context";
+import { CreditCardInputs } from "@/mock/inputs-mock";
+import axios from "axios";
+import CryptoJS from "crypto-js";
+import { parseCookies } from "nookies";
+import { useState } from "react";
+
+function crypt(data: string) {
+  const secretKey = process.env.SECRET_KEY || "secret";
+  const iv = CryptoJS.lib.WordArray.random(16);
+  const encrypted = CryptoJS.AES.encrypt(
+    data,
+    CryptoJS.enc.Utf8.parse(secretKey),
+    {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    }
+  );
+  return iv.concat(encrypted.ciphertext).toString(CryptoJS.enc.Base64);
+}
 
 export default function Checkout() {
   const { cart, totalPrice } = useGlobalContext();
+  const [selectedValue, setSelectedValue] = useState("1");
+  async function payCart(event: any) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const cookies = parseCookies();
+
+    await axios.post(
+      "http://localhost:8001/payments/process-payment",
+      {
+        name: crypt(formData.get("name")?.toString() as string),
+        cvv: crypt("111"),
+        expirationDate: crypt(formData.get("date")?.toString() as string),
+        cardNumber: crypt(formData.get("card")?.toString() as string),
+        installments: crypt(selectedValue.toString() as string),
+        value: crypt(totalPrice.toString()),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`,
+        },
+      }
+    );
+  }
 
   return (
     <div className="items-center justify-items-center min-h-[40dvw] p-8 pb-20 gap-16 sm:p-20 bg-white">
@@ -39,107 +79,74 @@ export default function Checkout() {
         subtitle="Preencha as informações abaixo para finalizar sua compra!"
       >
         <div className="w-full h-full flex flex-row items-stretch justify-center mt-8 max-[700px]:flex-col-reverse max-[700px]:items-center gap-8">
-          <div className="w-full min-w-[350px] h-full">
-            <Tabs
-              defaultValue="credit-card"
-              className="w-full flex flex-col items-center justify-center gap-2"
-            >
-              <TabsList className="grid grid-cols-2 w-[300px] gap-2">
-                <TabsTrigger value="credit-card">Cartão de Crédito</TabsTrigger>
-                <TabsTrigger value="pix">Pix</TabsTrigger>
-              </TabsList>
-              <TabsContent
-                value="credit-card"
-                className="w-full flex flex-row items-start justify-center gap-6 flex-wrap"
-              >
-                <Card className="w-[80%] min-w-[350px]">
-                  <CardHeader>
-                    <CardTitle>Pagamento no Cartão de Crédito</CardTitle>
-                    <CardDescription>
-                      Para pagamentos no cartão de crédito, preencha os campos
-                      abaixo com os dados do seu cartão. Todas as informações
-                      são criptografadas e seguras.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    {CreditCardInputs.map((input) => (
-                      <div className="space-y-1">
-                        <Label htmlFor={input.id}>{input.label}</Label>
-                        <Input
-                          id={input.id}
-                          type={input.type}
-                          placeholder={input.placeholder}
-                        />
-                      </div>
-                    ))}
+          <form onSubmit={payCart}>
+            <div className="w-full min-w-[350px] h-full">
+              <Card className="w-[80%] min-w-[350px]">
+                <CardHeader>
+                  <CardTitle>Pagamento no Cartão de Crédito</CardTitle>
+                  <CardDescription>
+                    Para pagamentos no cartão de crédito, preencha os campos
+                    abaixo com os dados do seu cartão. Todas as informações são
+                    criptografadas e seguras.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {CreditCardInputs.map((input) => (
                     <div className="space-y-1">
-                      <Label htmlFor="password">Parcelas</Label>
-                      <Select>
-                        <SelectTrigger className="w-full text-gray-500">
-                          <SelectValue
-                            placeholder="Quantidade de Parcelas"
-                            className="w-full"
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Quantidade de Parcelas</SelectLabel>
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
-                              <SelectItem key={item} value={item.toString()}>
-                                {item}x de{" "}
-                                {Intl.NumberFormat("pt-BR", {
-                                  style: "currency",
-                                  currency: "BRL",
-                                }).format(totalPrice / item)}{" "}
-                                sem juros
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </CardContent>
-                  <Separator className="w-full mb-6" />
-                  <CardFooter className="w-full flex justify-center">
-                    <Button className="w-full text-lg font-semibold mx-4 py-6 px-4 rounded-lg bg-green-800 hover:bg-green-700">
-                      Finalizar Compra
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              <TabsContent
-                value="pix"
-                className="w-full flex flex-row items-start justify-center gap-6 flex-wrap"
-              >
-                <Card className="w-[80%] min-w-[350px]">
-                  <CardHeader>
-                    <CardTitle>Pagamento no Pix</CardTitle>
-                    <CardDescription>
-                      Para pagamentos no Pix, escaneie o QR Code abaixo e efetue
-                      o pagamento. Você terá 24 horas para confirmar sua compra.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="w-full h-auto rounded-lg flex items-center justify-center">
-                      <Image
-                        src="/images/qrcode/qrcode.png"
-                        alt="QR Code"
-                        width={300}
-                        height={300}
-                        className="rounded-lg cover"
+                      <Label htmlFor={input.id}>{input.label}</Label>
+                      <Input
+                        id={input.id}
+                        type={input.type}
+                        name={input.name}
+                        placeholder={input.placeholder}
                       />
                     </div>
-                  </CardContent>
-                  <Separator className="w-full mb-6" />
-                  <CardFooter className="w-full flex justify-center">
-                    <Button className="w-full text-lg font-semibold mx-4 py-6 px-4 rounded-lg bg-green-800 hover:bg-green-700">
-                      Finalizar Compra
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
+                  ))}
+                  <div className="space-y-1">
+                    <Label htmlFor="password">Parcelas</Label>
+                    <Select
+                      value={selectedValue}
+                      onValueChange={(value) => {
+                        console.log(value);
+                        setSelectedValue(value);
+                      }}
+                    >
+                      <SelectTrigger className="w-full text-gray-500">
+                        <SelectValue
+                          placeholder="Quantidade de Parcelas"
+                          className="w-full"
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Quantidade de Parcelas</SelectLabel>
+                          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+                            <SelectItem key={item} value={item.toString()}>
+                              {item}x de{" "}
+                              {Intl.NumberFormat("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              }).format(totalPrice / item)}{" "}
+                              sem juros
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+                <Separator className="w-full mb-6" />
+                <CardFooter className="w-full flex justify-center">
+                  <Button
+                    className="w-full text-lg font-semibold mx-4 py-6 px-4 rounded-lg bg-green-800 hover:bg-green-700"
+                    type="submit"
+                  >
+                    Finalizar Compra
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+          </form>
           <div className="w-[50%] min-w-[350px] flex flex-col items-center justify-center gap-8 max-[700px]:flex-col-reverse max-[700px]:items-center">
             <div className="w-full min-w-[350px] h-full">
               <Card className="w-full min-w-[350px]">
@@ -169,7 +176,7 @@ export default function Checkout() {
             </div>
             {Array.isArray(cart) &&
             cart.length > 0 &&
-            cart.filter((item) => item.category === "service").length > 0 ? (
+            cart.filter((item) => item.category === "services").length > 0 ? (
               <div className="w-full min-w-[350px] h-full">
                 <Card className="w-full min-w-[350px]">
                   <CardHeader>

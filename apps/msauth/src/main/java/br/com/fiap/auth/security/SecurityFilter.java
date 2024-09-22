@@ -43,10 +43,9 @@ public class SecurityFilter extends OncePerRequestFilter {
         return authHeader.replace("Bearer ", "");
     }
 
-    public String getById(HttpServletRequest request) {
+    public User getUserByToken(HttpServletRequest request) {
         var token = this.recoverToken(request);
         var login = tokenService.validateToken(token);
-        User user = userRepository.findByLogin(login);
-        return user.getId();
+        return userRepository.findByLogin(login);
     }
 }
