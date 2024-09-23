@@ -9,11 +9,11 @@
 
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>br.com.fiap</groupId>
 	<artifactId>mscart</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>mscartt</name>
-	<description>Microserviço de carrinho para a aplicação fiap-store</description>
+	<name>mscart</name>
+	<description>Microserviço de produto para a aplicação fiap-cart</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -68,7 +68,6 @@
 	</dependencies>
 
 	<build>
-		<pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -83,7 +82,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		</pluginManagement>
 	</build>
 
 </project>
+

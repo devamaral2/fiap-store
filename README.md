@@ -60,18 +60,18 @@ TELA 5 - Pagamento.
 
   Exibe os Produtos selecionados ;
   
-  Selecione o método de pagamento (pix ou cartão de crédito);
+  Preencha os dados da compra;
   
-
-IMAGEM TELA5
 
 
 # Tecnologias Utilizadas
-  - SpringBoot
-  - WebFlux 
+  - SpringBoot 
   - Java
   - Spring Security
-  - JavaScript
+  - Spring feign
+  - Typescript
+  - bun
+  - next.js
 
 
 # Integrantes 
@@ -80,14 +80,10 @@ IMAGEM TELA5
  * Giulliana Munhoz
  * Rafael Amaral
  * Tiago Santana
+ 
 
 
-
-# Descrição do Projeto 
-
-![image](https://github.com/user-attachments/assets/0acc035d-1b6b-40d4-bef9-cbcd69b61193)
-
-### Descrição dos Microserviços:
+# Descrição dos Microserviços:
 
 
 1. **Microserviço de Login** (porta 8001):
@@ -119,7 +115,7 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 
 - **Docker e Docker Compose**: Para criar e gerenciar os containers de banco de dados.
 - **Java JDK 21** ou superior: Para rodar os microserviços Spring Boot.
-- **Node.js e pnpm**: Para rodar o frontend.
+- **Node.js e bun**: Para rodar o frontend.
 - **Maven**: Para rodar os serviços Spring Boot.
 
 ## Como Rodar o Projeto
@@ -143,7 +139,7 @@ docker-compose up -d
 
 Esse comando criará e iniciará os containers dos microserviços e banco de dados para cada serviço. Caso queira subir os microserviços de forma individualizada existe um arquivo "docker-compose.yml" disponível em cada diretório dos microserviços.
 
-Obs: Após você rodar o microserviço de produtos utilize o arquivo database.sql para preencher o banco de dados com os produtos da loja
+Obs: Após você rodar o microserviço de produtos utilize o arquivo database.sql para adicionar os primeiros produtos da loja
 
 ### 3. Rodando o frontend
 
@@ -152,7 +148,16 @@ Após rodar os microserviços, navegue até a pasta do frontend e execute o proj
 ```bash
 cd apps/frontend
 bun install
-bun run dev 
+bun run build
+bun start
+```
+Caso você não deseje instalar o runtime bun você poderá utilizar o npm também 
+
+```bash
+cd apps/frontend
+npm install
+npm run build
+npm start
 ```
 
 Isso iniciará o frontend na porta 3000.
@@ -160,8 +165,9 @@ Isso iniciará o frontend na porta 3000.
 
 Após os microserviços e o frontend estarem rodando, você poderá acessar o projeto via navegador:
 
+```bash
 http://localhost:3000
-
+```
 
 
 ## Licença

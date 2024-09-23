@@ -5,11 +5,9 @@ spring:
   application:
     name: mscart
   datasource:
-    url:      ${db.uri.auth}
-    username: ${db.username.auth}
-    password: ${db.password.auth}
-
-
+    url: jdbc:postgresql://postgres-cart:5434/cart_db
+    username: postgres
+    password: 3Mu9o82cGm0CoejxSEE0INVZhHmWibCS
   jpa:
     hibernate:
       ddl-auto: update

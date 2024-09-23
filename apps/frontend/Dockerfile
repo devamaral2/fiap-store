@@ -9,4 +9,6 @@ RUN bun install
 
 COPY . .
 
-CMD bun run dev
+RUN bun run build
+
+CMD bun start

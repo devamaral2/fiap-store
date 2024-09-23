@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(value = "carts", url = "http://localhost:8003")
+@FeignClient(value = "carts", url = "http://cart-ms:8003")
 public interface CartProducer {
     @GetMapping(value = "carts/{id}/find")
     List<CartItemDto> getCart(@PathVariable UUID id);

@@ -118,7 +118,7 @@ services:
   cart-ms:
     image: "cart-ms:0.0.1"
     build:
-      context: apps/mscart
+      context: apps/mscart/
     container_name: cart_ms
 
     ports:
@@ -126,7 +126,6 @@ services:
 
     networks:
       - app-network
-
     environment:
       WAIT_HOSTS: postgres-cart:5434
       DB_URI_AUTH: jdbc:postgresql://postgres-cart:5434/cart_db

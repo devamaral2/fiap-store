@@ -5,7 +5,7 @@ import br.com.fiap.auth.dto.ProductDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(value = "product-create", url = "http://localhost:8002/products")
+@FeignClient(value = "product-create", url = "http://product-ms:8002/products")
 public interface ProductCreateProducer {
 
     @PostMapping("/add-product")

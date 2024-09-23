@@ -22,7 +22,8 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    public List<CartItem> findByClientId(UUID clientId) {
+
+    public synchronized List<CartItem> findByClientId(UUID clientId) {
         Optional<Cart> optionalCart = cartRepository.findByClientId(clientId);
         Cart cart;
         if (optionalCart.isEmpty()) {
@@ -31,7 +32,7 @@ public class CartService {
         } else {
             cart = optionalCart.get();
         }
-        return optionalCart.get().getCartItems();
+        return cart.getCartItems();
 
     }
 

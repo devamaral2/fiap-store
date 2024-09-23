@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 
 import java.util.List;
 
-@FeignClient(value = "products", url = "http://localhost:8002")
+@FeignClient(value = "products", url = "http://product-ms:8002")
 public interface ProductProducer {
     @PatchMapping("products/remove-product")
     void removeProduct(List<SoldProductDto> soldProductDto);

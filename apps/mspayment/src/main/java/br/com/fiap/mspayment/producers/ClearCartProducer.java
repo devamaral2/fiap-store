@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.UUID;
 
-@FeignClient(value = "clear-carts", url = "http://localhost:8003")
+@FeignClient(value = "clear-carts", url = "http://cart-ms:8003")
 public interface ClearCartProducer {
 
     @PatchMapping("carts/{id}/clear-cart")

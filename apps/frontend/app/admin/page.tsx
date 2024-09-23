@@ -37,14 +37,14 @@ import { useRouter } from "next/navigation";
 import { parseCookies } from "nookies";
 import * as React from "react";
 
-export type Payment = {
+type Payment = {
   id: string;
   amount: number;
   status: "pending" | "processing" | "success" | "failed";
   email: string;
 };
 
-export const columns: ColumnDef<Payment>[] = [
+const columns: ColumnDef<Payment>[] = [
   {
     accessorKey: "name",
     header: "Nome",
@@ -177,7 +177,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ];
 
-export function DataTable() {
+function DataTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

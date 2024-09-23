@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.UUID;
 
-@FeignClient(value = "product-update", url = "http://localhost:8002/products")
+@FeignClient(value = "product-update", url = "http://product-ms:8002/products")
 public interface ProductUpdateProducer {
 
     @PatchMapping(value = "/{id}")
